@@ -1,0 +1,27 @@
+{% include 'main.html' %}
+
+{% block title %}
+<title>Hi, {{request.user.username}}</title>
+{% endblock title %}
+
+{% block content %}
+<div class="home__panel">
+   <div class="home__panel__left">
+
+   </div>
+   <div class="home__panel__right">
+      <h2>Admins</h2>
+      {% for admin in admins %}
+         <div class="admin">
+            <h3>{{admin.username}}</h3> - {{admin.last_login}} - {{admin.date_joined}}
+         </div>
+      {% endfor %}
+      <h2>Users</h2>
+      {% for user in users %}
+         <div class="admin">
+            <h3>{{admin.username}}</h3>
+         </div>
+      {% endfor %}
+   </div>
+</div>
+{% endblock content %}
