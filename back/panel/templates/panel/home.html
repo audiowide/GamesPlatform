@@ -10,16 +10,16 @@
 
    </div>
    <div class="home__panel__right">
-      <h2>Admins</h2>
+      <h3>Admins</h3>
       {% for admin in admins %}
          <div class="admin">
-            <h3>{{admin.username}}</h3> - {{admin.last_login}} - {{admin.date_joined}}
+            <h4>{{admin.username}}</h4> - {{admin.last_login}} - {{admin.date_joined}}
          </div>
       {% endfor %}
-      <h2>Users</h2>
+      <h3>Users</h3>
       {% for user in users %}
          <div class="admin">
-            <h3>{{admin.username}}</h3>
+            <h4>{{admin.username}}</h4> - <a href="/user/:username">show</a>
          </div>
       {% endfor %}
    </div>
