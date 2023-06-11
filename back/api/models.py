@@ -18,6 +18,7 @@ class Game(models.Model):
    slug = models.CharField(max_length=255, unique=True)
    author = models.ForeignKey(User, on_delete=models.CASCADE)
    description = models.TextField(max_length=255, blank=True)
+   thumbnail = models.CharField(max_length=1000, blank=True)
    
    is_deleted  = models.BooleanField(default=False)
    

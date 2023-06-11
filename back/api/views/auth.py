@@ -16,7 +16,6 @@ from django.contrib.auth.hashers import make_password
 
 from ..validations import validate_email, validate_username
 from ..utils import authenticate
-from ..models import Profile
 
 
 #! Sign Up
@@ -64,8 +63,10 @@ def sign_in(request):
          'refresh_token': refresh_token,
          }, status=HTTP_201_CREATED)
    else:
-      return Response({'message': 'user not found'}, 
-         status=HTTP_401_UNAUTHORIZED)
+      return Response({
+         'status': 'invalid',
+         'message': 'Wrong username or password'
+      },  status=HTTP_401_UNAUTHORIZED)
 
 #! Sign Out
 @api_view(['POST'])
