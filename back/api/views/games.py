@@ -19,7 +19,7 @@ from ..serializers import (GameSerializer,
                            CreateGameSerializer,
                            GameScoreSerializer)
 
-from ..utils import generate_slug
+from ..utils import generate_slug, paginate_data
 
 
 @api_view(['GET', 'POST'])
@@ -27,9 +27,9 @@ def games(request):
    if request.method == 'GET':
       games = Game.objects.all()
       
-      return Response({
-         'content': GameSerializer(games, many=True).data
-   }, status=HTTP_200_OK)
+      response = paginate_data(request, games, GameSerializer)   
+      return response
+      
    if request.method == 'POST':
       if request.user.is_authenticated:
          title = request.data['title']

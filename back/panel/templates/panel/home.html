@@ -7,7 +7,17 @@
 {% block content %}
 <div class="home__panel">
    <div class="home__panel__left">
-
+      {% for game in games %}
+         <div class="game">
+            <h4>{{game.title}}</h4> 
+            {{game.description}}
+            <h4>{{game.author.username}}</h4>
+            {{game.updated}}
+            <h4>
+               <a href="{% url 'panel:game_delete' game.id %}">delete</a>
+            </h4>
+         </div>
+      {% endfor %}
    </div>
    <div class="home__panel__right">
       <h3>Admins</h3>
@@ -18,8 +28,20 @@
       {% endfor %}
       <h3>Users</h3>
       {% for user in users %}
-         <div class="admin">
-            <h4>{{admin.username}}</h4> - <a href="/user/:username">show</a>
+         <div class="admin game">
+            <h4>{{user.username}}</h4>
+            <a href="api/user/{{user.username}}">show</a>
+            <form action="" name="isBlockedMessage" method="POST" class="block__form">
+               <input type="hidden" name="isUserId" value="{{user.id}}" >
+               <select name="block_message" id="">
+                  <option disabled selected>Select Message</option>
+                  <option value="You have been blocked by an administrator">You have been blocked by an administrator</option>
+                  <option value="You have been blocked for spamming">You have been blocked for spamming</option>
+                  <option value="You have been blocked for cheating">You have been blocked for cheating</option>
+               </select>
+               <input type="hidden" name="isBlocked" value="{{user.set_profile.isBlocked}}" >
+               <button>Delete</button>
+            </form>
          </div>
       {% endfor %}
    </div>

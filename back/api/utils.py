@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password, check_password
 from api.models import Game  
+from rest_framework.pagination import PageNumberPagination
 
 import random
 
@@ -23,3 +24,16 @@ def generate_slug(title):
       return ['invalid', 'Game title already exists']
    except:
       return ['success', slug]
+   
+def paginate_data(request, queryset, serializer):
+    paginator = PageNumberPagination()
+    paginator.page_size = 10  # Specify the number of items per page
+
+    # Paginate the queryset
+    paginated_queryset = paginator.paginate_queryset(queryset, request)
+
+    # Serialize the paginated queryset
+    serialized_data = serializer(paginated_queryset, many=True)
+
+    # Return the paginated response
+    return paginator.get_paginated_response(serialized_data.data)
