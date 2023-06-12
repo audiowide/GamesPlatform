@@ -16,6 +16,13 @@ class ProfileSerializer(ModelSerializer):
       model = ('id', 'user', 'ava', 'location', 'bio')
    
 class GameSerializer(ModelSerializer):
+   author = UserSerializer(many=False)
+   
+   class Meta:
+      model = Game
+      fields = ('id', 'title', 'slug', 'author', 'description', 'created', 'updated')
+
+class CreateGameSerializer(ModelSerializer):
    class Meta:
       model = Game
       fields = ('id', 'title', 'slug', 'author', 'description', 'created', 'updated')

@@ -18,7 +18,6 @@ class Game(models.Model):
    slug = models.CharField(max_length=255, unique=True)
    author = models.ForeignKey(User, on_delete=models.CASCADE)
    description = models.TextField(max_length=255, blank=True)
-   thumbnail = models.CharField(max_length=1000, blank=True)
    
    is_deleted  = models.BooleanField(default=False)
    
@@ -31,7 +30,7 @@ class Game(models.Model):
 class GameVersion(models.Model):
    game = models.ForeignKey(Game, on_delete=models.CASCADE)
    path_to_zip_game = models.FileField(upload_to='games/zip')
-   path_to_game = models.CharField(max_length=1000)
+   path_to_game = models.CharField(max_length=1000, blank=True)
    version = models.DateTimeField(auto_now=True)
    
    def __str__(self):

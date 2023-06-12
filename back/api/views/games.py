@@ -9,9 +9,12 @@ from rest_framework.status import (HTTP_200_OK,
                                    HTTP_404_NOT_FOUND)
 from django.contrib.auth.decorators import login_required
 
+import os
+import zipfile
+
 from django.contrib.auth.models import User
 from ..models import Profile, Game, GameVersion, GameScore
-from ..serializers import GameSerializer, GameVersionSerializer 
+from ..serializers import GameSerializer, GameVersionSerializer, CreateGameSerializer
 
 from ..utils import generate_slug
 
@@ -22,7 +25,7 @@ def games(request):
       games = Game.objects.all()
       
       return Response({
-         'content': games
+         'content': GameSerializer(games, many=True).data
    }, status=HTTP_200_OK)
    if request.method == 'POST':
       if request.user.is_authenticated:
@@ -44,7 +47,7 @@ def games(request):
             'description': description
          }
          
-         serializer = GameSerializer(data=data)
+         serializer = CreateGameSerializer(data=data)
          serializer.is_valid(raise_exception=True)
          game = serializer.save()
          
@@ -56,38 +59,38 @@ def games(request):
          return Response({
             'status': 'forbidden',
             'message': 'You are not the game author',
-         }, status=HTTP_201_CREATED)
+         }, status=HTTP_403_FORBIDDEN)
          
 @api_view(['GET', 'PUT', 'DELETE'])
 def game(request, slug):
-   try: 
+   # try: 
       game = Game.objects.get(slug=slug)
-      user = User.objects.get(id=game.id)
       
       if request.method == 'GET':
+         uploadTimestamp = thumbnail = gamePath = ''
          scores_count  = 0
+         
+         game_version = GameVersion.objects.filter(game=game).last()
+         if game_version != None:
+            uploadTimestamp = game_version.version
+            gamePath = game_version.path_to_game
+            thumbnail = f'{game_version.path_to_game}/thumbnail.png'
+            game_scores = GameScore.objects.filter(game_version=game_version)
          
          response = {
             'slug': game.slug,
             'title': game.title,
             'description': game.description,
-            'author': user.username,
-            'thumbnail': game.thumbnail,
+            'author': game.author.username,
+            'thumbnail': f'/{thumbnail}',
+            'uploadTimestamp': uploadTimestamp,
             'scoreCount': scores_count,
+            'gamePath': f'/{gamePath}',
          }
-         
-         game_version = GameVersion.objects.filter(game=game).last()
-         if game_version != None:
-            game_scores = GameScore.objects.filter(game_version=game_version)
-            
-            response += {
-               'uploadTimestamp': game_version.version,
-               'gamePath': game_version.path_to_game
-            }
-            
          
          return Response(response, status=HTTP_200_OK)
          
+      if request.user == game.author:
          if request.method == 'PUT':
             title = request.data['title']
             description = request.data['description']
@@ -97,37 +100,57 @@ def game(request, slug):
             game.save()
             
             return Response({
-               'status': 'success',
+               "status": 'success',
             }, status=HTTP_200_OK)
             
-         if request.method == 'DELETE':
+         elif request.method == 'DELETE':
             game.delete()
+            
             return Response({}, status=HTTP_204_NO_CONTENT)
-         
-   except:
       return Response({
-         "status": "not-found",
-         "message": "Not found"
-      }, status=HTTP_404_NOT_FOUND)
+         'status': 'forbidden',
+         'message': f'You are not the game author',
+         } , status=HTTP_403_FORBIDDEN)
+         
+   # except:
+   #    return Response({
+   #       "status": "not-found",
+   #       "message": "Not found"
+   #    }, status=HTTP_404_NOT_FOUND)
       
 @api_view(['POST'])
 def game_upload(request, slug):
-   try: 
+   # try: 
       game = Game.objects.get(slug=slug)
-      user = User.objects.get(id=game.id)
+      user = User.objects.get(id=game.author.id)
+      
+      game_versions = GameVersion.objects.filter(game=game)
       
       if request.method == 'POST':
-         zip = request.data['zip']
+         if request.user == game.author:
+            zip_file = request.FILES.get('zip')
+            
+            game_version = GameVersion.objects.create(
+               game = game,
+               path_to_zip_game = zip_file,
+            )         
+            
+            destination_path = f'static/media/games/zip/new_{zip_file.name}'
+            with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+                zip_ref.extractall(destination_path)
+                
+                game_version.path_to_game = f'{destination_path}/{destination_path}'
+                game_version.save()
+
+            return Response({
+               'zip': zip_file.name,
+            }, status = HTTP_200_OK)
          
-         return Response({
-            'zip': zip,
-         }, status = HTTP_200_OK)
-         
-   except:
-      return Response({
-         "status": "not-found",
-         "message": "Not found"
-      }, status=HTTP_404_NOT_FOUND)
+   # except:
+   #    return Response({
+   #       "status": "not-found",
+   #       "message": "Not found"
+   #    }, status=HTTP_404_NOT_FOUND)
       
 @api_view(['GET'])
 def game_version(request, slug, version):

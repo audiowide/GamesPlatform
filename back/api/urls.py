@@ -12,6 +12,6 @@ urlpatterns = [
 
    path('games', games.games),
    path('games/<str:slug>', games.game),
-   path('games/<str:slug>', games.game_upload),
+   path('games/<str:slug>/game_upload', games.game_upload),
    path('games/<str:slug>/version', games.game_version)
 ]
