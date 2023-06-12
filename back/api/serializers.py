@@ -7,7 +7,7 @@ from .models import  Profile, Game, GameVersion, GameScore
 class UserSerializer(ModelSerializer):
    class Meta:
       model = User
-      fields = ('id', 'username', 'email', 'last_login', 'date_joined')
+      fields = ('username', 'email', 'last_login', 'date_joined')
 
 class ProfileSerializer(ModelSerializer):
    user = UserSerializer(many=False)
@@ -41,8 +41,8 @@ class GameScoreSerializer(ModelSerializer):
       fields = ('id', 'user', 'game_version', 'score', 'created', 'updated')
       
 class GameAuthoredSerializer(ModelSerializer):
-   user = UserSerializer(many=False)
+   author = UserSerializer(many=False)
    
    class Meta:
       model = Game
-      fields = ('title', 'slug','description')
+      fields = ('title', 'slug', 'description', 'author')

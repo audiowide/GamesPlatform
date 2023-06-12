@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 class Profile(models.Model):
    user = models.ForeignKey(User, on_delete=models.CASCADE)
    ava = models.ImageField(upload_to='avatars', default='ava.jpg')
-   location = models.CharField(max_length=200, blank=True)
    bio = models.TextField(max_length=500, blank=True)
    
    isBlocked = models.BooleanField(default=False)

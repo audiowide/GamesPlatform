@@ -12,21 +12,38 @@ from django.contrib.auth.models import User
 from ..models import Profile, Game, GameVersion, GameScore
 from ..serializers import GameAuthoredSerializer, GameScoreSerializer
 
+@api_view(['GET', 'PUT'])
 def user(request, username):
    try:
       user = User.objects.get(username=username)
       profile = Profile.objects.get(user=user)
       
-      games = Game.objects.filter(user=user)
-      game_versions = GameVersion.objects.filter(user=user)
-      game_scores = GameScore.objects.filter(user=user)
+      if request.method == 'GET':
+         games = Game.objects.filter(author=user)
+         game_scores = GameScore.objects.filter(user=user)
+         
+         return Response({
+            'username': user.username,
+            'ava': f'/static/media/{str(profile.ava)}',
+            'bio': profile.bio,
+            'registeredTimestamp': user.date_joined,
+            'authoredGames': GameAuthoredSerializer(games, many=True).data,
+            'highscores': GameScoreSerializer(game_scores, many=True).data
+         }, status=HTTP_200_OK)
       
-      return Response({
-         'username': user.username,
-         'registeredTimestamp': user.date_joined,
-         'authoredGames': GameAuthoredSerializer(games, many=True).data,
-         'highscores': GameScoreSerializer(game_scores, many=True).data
-      }, status=HTTP_200_OK)
+      if request.method == 'PUT':
+         if request.user == user:
+            image = request.FILES.get('ava')
+            bio = request.data.get('bio')
+            
+            profile.ava = image
+            profile.bio = bio
+            profile.save()
+            
+            return response({
+               'status': 'success'
+            }, status=HTTP_200_OK)
+         
    except:
       return Response({
          "status": "not-found",
