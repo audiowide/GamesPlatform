@@ -1,0 +1,13 @@
+.user {
+    @apply rounded-md p-4 gap-4 flex justify-center items-center flex-col w-full max-w-md;   
+}
+
+.page__title {
+    @apply w-full max-w-full
+}
+.highscores {
+    @apply flex justify-center items-center flex-col w-full
+}
+.highscore {
+    @apply flex justify-between items-center w-full bg-gray-900 rounded-lg mb-2 p-2 ;
+}

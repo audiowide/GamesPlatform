@@ -1,0 +1,23 @@
+.page__games {
+    @apply flex justify-center w-full 
+    items-center flex-col
+}
+.game {
+    @apply bg-gray-900 p-4 rounded-lg  hover:shadow-rose-500 hover:shadow-md transition-all delay-300 ease-linear w-full mb-2;
+}
+.game__header__left {
+    @apply flex  justify-center items-center gap-2 text-sm
+}
+.title {
+    @apply text-xl font-bold
+}
+.game__header {
+    @apply flex justify-between items-center w-full;
+}
+.game__body {
+    @apply flex justify-between items-center w-full mb-5
+}
+.game__body img {
+    @apply object-cover rounded-lg;
+    width: 30%;
+}

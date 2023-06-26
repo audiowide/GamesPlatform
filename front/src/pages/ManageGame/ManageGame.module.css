@@ -1,0 +1,7 @@
+.form {
+    @apply border-2 rounded-md border-white p-4 gap-4 flex justify-center items-center flex-col w-full max-w-xl;   
+
+}
+.thumbnail {
+    @apply w-40 rounded-md
+}

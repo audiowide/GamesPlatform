@@ -1,0 +1,9 @@
+.header {
+    @apply flex justify-between items-center w-full border-b-2 border-white pr-6 pl-6 h-14 mb-2;
+}
+.header__right {
+    @apply flex justify-center items-center gap-4 ;
+}
+.header__logo {
+    @apply text-xl font-bold
+ }

@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* base settings */
+* {
+  @apply box-border m-0 p-0 ;
+}
+body {
+  @apply bg-black text-white text-lg font-mono overflow-x-hidden;
+}
+
+/* link */
+.link{ 
+  @apply text-white transition-all delay-300 ease-linear ;
+}
+.link:hover {
+  @apply text-rose-500;
+}
+
+/* selection */
+::selection {
+  @apply bg-rose-500 text-black;
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+  @apply bg-transparent w-2;
+}
+::-webkit-slider-thumb {
+  @apply bg-rose-500 rounded-lg;
+}
+
+/* btn */
+.btn {
+  @apply text-lg border-2 rounded-md border-white p-2 pl-6 pr-6 transition-all delay-300 ease-linear hover:border-rose-500 hover:text-rose-500;
+}
+
+.pre__page {
+  @apply flex justify-center items-center flex-col p-4 mb-5 w-full;
+}
+.page {
+  @apply flex justify-center items-center flex-col p-4 mb-5 w-full max-w-2xl;
+}
+input, textarea, select{
+  @apply bg-transparent border-white rounded-md outline-none border-2 p-2 w-full
+}
+
+h2 {
+  @apply text-2xl font-bold mb-2 w-full items-center max-w-md
+}
+.buttons {
+  @apply flex justify-between gap-4 w-full items-center ;
+}
+.error {
+  @apply bg-rose-500 rounded-md mt-2 mb-2 p-4 text-lg;
+}

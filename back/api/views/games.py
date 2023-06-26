@@ -107,6 +107,7 @@ def game(request, slug):
             'thumbnail': f'/{thumbnail}',
             'uploadTimestamp': uploadTimestamp,
             'scoreCount': scores_count,
+            'gameScores': GameScoreSerializer(game_scores, many=True).data,
             'gamePath': f'/{gamePath}/index.html',
          }
          

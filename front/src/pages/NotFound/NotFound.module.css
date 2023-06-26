@@ -1,0 +1,7 @@
+.NotFound {
+    @apply flex justify-center items-center flex-col w-full h-full p-4 
+}
+.NotFound span {
+    @apply text-2xl font-bold;
+    text-shadow:  1px 3px 1px rgb(254,254,254, .6) ;
+}
