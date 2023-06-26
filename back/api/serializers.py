@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from django.contrib.auth.models import User
 from .models import  Profile, Game, GameVersion, GameScore
@@ -13,14 +13,37 @@ class ProfileSerializer(ModelSerializer):
    user = UserSerializer(many=False)
    
    class Meta:
-      model = ('id', 'user', 'ava', 'location', 'bio')
+      model = ('id', 'user', 'ava', 'bio')
    
 class GameSerializer(ModelSerializer):
-   author = UserSerializer(many=False)
+    author = UserSerializer(many=False)
+    thumbnail = SerializerMethodField()
+    scores = SerializerMethodField()
+
+    class Meta:
+        model = Game
+        fields = ('id', 'title', 'slug', 'author', 'thumbnail', 'description', 'scores', 'created', 'updated')
+
+    def get_thumbnail(self, obj):
+        game_version = GameVersion.objects.filter(game=obj).last()
+        if game_version is not None:
+            return f'/{game_version.path_to_game}/thumbnail.png'
+        return ''
    
-   class Meta:
-      model = Game
-      fields = ('id', 'title', 'slug', 'author', 'description', 'created', 'updated')
+    def get_scores(self, obj):
+      scores_count  = 0
+      game_version = GameVersion.objects.filter(game=obj).last()
+      if game_version is not None:
+         game_scores = GameScore.objects.filter(game_version=game_version)
+                  
+         if len(game_scores)!= 0:
+            for game_score in game_scores:
+               scores_count += int(game_score.score)
+            return scores_count
+
+         return scores_count
+      return scores_count
+
 
 class CreateGameSerializer(ModelSerializer):
    class Meta:

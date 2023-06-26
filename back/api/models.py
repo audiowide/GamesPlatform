@@ -32,8 +32,8 @@ class GameVersion(models.Model):
    path_to_game = models.CharField(max_length=1000, blank=True)
    version = models.DateTimeField(auto_now=True)
    
-   def __str__(self):
-      return self.game.slug
+   # def __str__(self):
+      # return str(self.id)
    
 class GameScore(models.Model):
    user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -44,4 +44,4 @@ class GameScore(models.Model):
    updated = models.DateTimeField(auto_now=True)
    
    def __str__(self):
-      return '{} - {} - {}'.format(self.user.username, self.game.slug, self.score)
+      return '{} - {}'.format(self.user.username, self.score)

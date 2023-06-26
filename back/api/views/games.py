@@ -27,6 +27,21 @@ def games(request):
    if request.method == 'GET':
       games = Game.objects.all()
       
+      sortBy = request.GET.get('sortBy')
+      sortDir = request.GET.get('sortDir')
+      
+      if sortBy == 'title':
+         games = games.order_by('title')
+      elif sortBy == 'scores':
+         games = games.order_by('description')
+      elif sortBy == 'uploaddate':
+         games = games.order_by('updated')
+      
+      if sortDir == 'desc':
+         games = games.order_by('-title')
+      elif sortDir == 'asc':
+         games = games.order_by('title')
+      
       response = paginate_data(request, games, GameSerializer)   
       return response
       
@@ -66,7 +81,7 @@ def games(request):
          
 @api_view(['GET', 'PUT', 'DELETE'])
 def game(request, slug):
-   try: 
+   # try: 
       game = Game.objects.get(slug=slug)
       
       if request.method == 'GET':
@@ -79,7 +94,11 @@ def game(request, slug):
             gamePath = game_version.path_to_game
             thumbnail = f'{game_version.path_to_game}/thumbnail.png'
             game_scores = GameScore.objects.filter(game_version=game_version)
-         
+            
+            if len(game_scores)!= 0:
+               for game_score in game_scores:
+                  scores_count += int(game_score.score)
+                  
          response = {
             'slug': game.slug,
             'title': game.title,
@@ -115,11 +134,11 @@ def game(request, slug):
          'message': f'You are not the game author',
          } , status=HTTP_403_FORBIDDEN)
          
-   except:
-      return Response({
-         "status": "not-found",
-         "message": "Not found"
-      }, status=HTTP_404_NOT_FOUND)
+   # except:
+   #    return Response({
+   #       "status": "not-found",
+   #       "message": "Not found"
+   #    }, status=HTTP_404_NOT_FOUND)
       
 @api_view(['POST'])
 def game_upload(request, slug):
