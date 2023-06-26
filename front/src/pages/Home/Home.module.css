@@ -21,3 +21,9 @@
     @apply object-cover rounded-lg;
     width: 30%;
 }
+.page__filters {
+    @apply justify-between items-center flex w-full
+}
+.select {
+    @apply flex justify-center items-center w-full appearance-none 
+}

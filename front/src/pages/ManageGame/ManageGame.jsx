@@ -6,7 +6,7 @@ import {useAuth} from '../../hooks/useAuth'
 
 const ManageGame = () => {
   const {slug} = useParams()
-  const {navigate} = useNavigate()
+  const navigate = useNavigate()
   const {name, isAuth} = useAuth()
 
   const [title, setTitle] = useState('')
@@ -32,7 +32,8 @@ const ManageGame = () => {
 
   const updateTitle = () => {
     $axios.put(`games/${slug}`, {
-      'title': title,
+      title: title,
+      description: description,
     })
     .then(res => {
       console.log(res.data)
@@ -41,7 +42,8 @@ const ManageGame = () => {
 
   const updateDescription = () => {
     $axios.put(`games/${slug}`, {
-      'description': description,
+      title: title,
+      description: description,
     })
     .then(res => {
       console.log(res.data)
@@ -50,6 +52,8 @@ const ManageGame = () => {
 
   const deletegame = () => {
     $axios.delete(`games/${slug}`).then(() => {
+      navigate('/')
+    }).catch(err => {
       navigate('/')
     })
   }

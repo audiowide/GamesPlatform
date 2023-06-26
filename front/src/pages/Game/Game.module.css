@@ -1,3 +1,9 @@
 .page__screen {
     @apply mb-4
 }
+.game__score {
+    @apply w-full flex justify-between gap-10 items-center bg-gray-900 rounded-md p-2 mb-2
+}
+.buttons {
+    @apply flex justify-between items-start w-full 
+}
