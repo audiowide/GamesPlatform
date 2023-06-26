@@ -65,7 +65,29 @@ class GameScoreSerializer(ModelSerializer):
       
 class GameAuthoredSerializer(ModelSerializer):
    author = UserSerializer(many=False)
+   thumbnail = SerializerMethodField()
+   scores = SerializerMethodField()
    
    class Meta:
       model = Game
-      fields = ('title', 'slug', 'description', 'author')
+      fields = ('title', 'slug','thumbnail', 'scores', 'description', 'author')
+      
+   def get_thumbnail(self, obj):
+      game_version = GameVersion.objects.filter(game=obj).last()
+      if game_version is not None:
+         return f'/{game_version.path_to_game}/thumbnail.png'
+      return ''
+
+   def get_scores(self, obj):
+      scores_count  = 0
+      game_version = GameVersion.objects.filter(game=obj).last()
+      if game_version is not None:
+         game_scores = GameScore.objects.filter(game_version=game_version)
+                  
+         if len(game_scores)!= 0:
+            for game_score in game_scores:
+               scores_count += int(game_score.score)
+            return scores_count
+
+         return scores_count
+      return scores_count
