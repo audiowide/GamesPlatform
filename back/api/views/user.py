@@ -40,7 +40,7 @@ def user(request, username):
             profile.bio = bio
             profile.save()
             
-            return response({
+            return Response({
                'status': 'success'
             }, status=HTTP_200_OK)
          
